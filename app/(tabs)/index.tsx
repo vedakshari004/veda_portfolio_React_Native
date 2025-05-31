@@ -1,75 +1,164 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { useRouter } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { useState } from 'react';
+import {
+  Button,
+  Image,
+  Linking,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+} from 'react-native';
 
 export default function HomeScreen() {
+  const router = useRouter();
+  const [isDark, setIsDark] = useState(false);
+  const theme = isDark ? darkTheme : lightTheme;
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <ScrollView
+      style={[styles.container, { backgroundColor: theme.background }]}
+      contentContainerStyle={{ flexGrow: 1 }}
+    >
+      <View style={styles.innerContainer}>
+        <StatusBar style={isDark ? 'light' : 'dark'} />
+
+        {/* Theme Toggle */}
+        <View style={styles.toggleContainer}>
+          <Text style={[styles.toggleText, { color: theme.text }]}>
+            {isDark ? 'Dark Mode' : 'Light Mode'}
+          </Text>
+          <Switch
+            value={isDark}
+            onValueChange={() => setIsDark(!isDark)}
+            thumbColor={isDark ? '#B3E5FC' : '#81D4FA'}
+          />
+        </View>
+
+        {/* Profile */}
+        <Image source={require('../../assets/images/profile.jpg')} style={styles.profileImage} />
+        <Text style={[styles.name, { color: theme.text }]}>Yeruva Vedakshari</Text>
+        <Text style={[styles.role, { color: theme.text }]}>Student</Text>
+
+        {/* About Section */}
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>About Me</Text>
+        <Text style={[styles.about, { color: theme.text }]}>
+          Aspiring computer science engineer with hands-on experience in data science, machine
+          learning, and web development. Skilled in Python, Java, SQL. Passionate about solving
+          real-world problems with elegant technical solutions.
+        </Text>
+
+        {/* Portfolio Navigation */}
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>Portfolio Sections</Text>
+        <View style={styles.buttonGroup}>
+          <Button title="Skills" onPress={() => router.push('/skills')} />
+          <Button title="Education" onPress={() => router.push('/education')} />
+        </View>
+
+        <View style={styles.centeredButton}>
+          <Button title="Projects" onPress={() => router.push('/projects')} />
+        </View>
+
+        <View style={styles.buttonGroup}>
+          <Button title="Certifications" onPress={() => router.push('/certifications')} />
+          <Button title="Participations" onPress={() => router.push('/participations')} />
+        </View>
+
+        {/* Contact Info */}
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>Contact</Text>
+        <Text
+          style={[styles.link, { color: theme.primary }]}
+          onPress={() => Linking.openURL('mailto:vedakshari2999@gmail.com')}
+        >
+          Email: vedakshari2999@gmail.com
+        </Text>
+        <Text
+          style={[styles.link, { color: theme.primary }]}
+          onPress={() =>
+            Linking.openURL('https://www.linkedin.com/in/vedakshari-yeruva-537247291/')
+          }
+        >
+          LinkedIn
+        </Text>
+      </View>
+    </ScrollView>
   );
 }
 
+// Themes
+const lightTheme = {
+  background: '#ffffff',
+  text: '#000000',
+  primary: '#81D4FA',
+};
+
+const darkTheme = {
+  background: '#121212',
+  text: '#ffffff',
+  primary: '#B3E5FC',
+};
+
+// Styles
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: {
+    flex: 1,
+  },
+  innerContainer: {
+    flexGrow: 1,
+    padding: 24,
+  },
+  toggleContainer: {
     flexDirection: 'row',
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    gap: 8,
+    marginBottom: 20,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  toggleText: {
+    marginRight: 8,
+    fontSize: 14,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  profileImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+  name: {
+    fontSize: 24,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  role: {
+    fontSize: 18,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  about: {
+    fontSize: 16,
+    lineHeight: 22,
+    marginBottom: 10,
+  },
+  buttonGroup: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: 15,
+  },
+  centeredButton: {
+    marginVertical: 15,
+    alignItems: 'center',
+  },
+  link: {
+    marginTop: 12,
+    fontSize: 14,
+    textDecorationLine: 'underline',
   },
 });
